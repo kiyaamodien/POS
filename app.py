@@ -4,6 +4,17 @@ import datetime
 from flask import Flask, request, jsonify
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_mail import Mail, Message
+# import sentry_sdk
+#
+# sentry_sdk.init(
+#     "https://<key>@sentry.io/<project>",
+#
+#     # Set traces_sample_rate to 1.0 to capture 100%
+#     # of transactions for performance monitoring.
+#     # We recommend adjusting this value in production.
+#     traces_sample_rate=1.0,
+
+
 
 
 class User(object):
