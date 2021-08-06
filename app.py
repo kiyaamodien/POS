@@ -226,6 +226,34 @@ def edit_cart(product_id):
                     response["product_type"] = "Cart updated successfully"
                     response["status_code"] = 200
                 return response
+            if request.method == "PUT":
+                with sqlite3.connect('users.db') as conn:
+                    incoming_data = dict(request.json)
+                    put_data = {}
+
+                    if incoming_data.get("product_quantity") is not None:
+                        put_data["product_quantity"] = incoming_data.get("product_quantity")
+                        with sqlite3.connect('users.db') as conn:
+                            cursor = conn.cursor()
+                            cursor.execute("UPDATE shop SET product_quantity =? WHERE id=?",
+                                           (put_data["product_quantity"], product_id))
+                            conn.commit()
+                            response['message'] = "Update was successfully added"
+                            response['status_code'] = 200
+                        return response
+                    if incoming_data.get("product_quantity") is not None:
+                        put_data['product_quantity'] = incoming_data.get('content')
+
+                        with sqlite3.connect('users.db') as conn:
+                            cursor = conn.cursor()
+                            cursor.execute("UPDATE shop SET product_quantity =? WHERE id=?",
+                                           (put_data["product_quantity"], product_id))
+                            conn.commit()
+
+                            response["product_quantity"] = "Cart updated successfully"
+                            response["status_code"] = 200
+                        return response
+            return response
     return response
 
 
