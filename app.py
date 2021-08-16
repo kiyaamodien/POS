@@ -4,6 +4,7 @@ import datetime
 from flask import Flask, request, jsonify
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_mail import Mail, Message
+from flask_cors import CORS
 # import sentry_sdk
 #
 # sentry_sdk.init(
@@ -13,7 +14,6 @@ from flask_mail import Mail, Message
 #     # of transactions for performance monitoring.
 #     # We recommend adjusting this value in production.
 #     traces_sample_rate=1.0,
-
 
 
 
@@ -123,6 +123,7 @@ app.config['MAIL_USERNAME'] = 'kiyaamudienkhan@gmail.com'
 app.config['MAIL_PASSWORD'] = 'Khanget47'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+CORS(app)
 mail = Mail(app)
 
 jwt = JWT(app, authenticate, identity)
@@ -184,15 +185,15 @@ def user_registration():
 #         return response
 
 
-@app.route('/get-users/<int:id>', methods=["GET"])
-def get_users(id):
-    response = {}
-    with sqlite3.connect("users.db") as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM user WHERE user_id=" + str(id))
-        response['status_code'] = 200
-        response['data'] = cursor.fetchone()
-    return jsonify(response)
+# @app.route('/get-users/<int:id>', methods=["GET"])
+# def get_users(id):
+#     response = {}
+#     with sqlite3.connect("users.db") as conn:
+#         cursor = conn.cursor()
+#         cursor.execute("SELECT * FROM user WHERE user_id=" + str(id))
+#         response['status_code'] = 200
+#         response['data'] = cursor.fetchone()
+#     return jsonify(response)
 
 
 @app.route("/delete-product/<int:post_id>")
@@ -274,13 +275,43 @@ def get_user(post_id):
 
     with sqlite3.connect("users.db") as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM post WHERE id=" + str(post_id))
+        cursor.execute("SELECT * FROM shop WHERE id=" + str(post_id))
 
         response["status_code"] = 200
         response["description"] = "users retrieved successfully"
         response["data"] = cursor.fetchone()
 
     return jsonify(response)
+
+
+@app.route('/get-products/<int:id>/', methods=["GET"])
+def get_products(id):
+    response = {}
+
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM shop WHERE id=" + str(id))
+
+        response["status_code"] = 200
+        response["description"] = "users retrieved successfully"
+        response["data"] = cursor.fetchone()
+
+    return jsonify(response)
+
+@app.route('/all-products/', methods=["GET"])
+def all_user():
+    response = {}
+
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM shop")
+
+        response["status_code"] = 200
+        response["description"] = "users retrieved successfully"
+        response["data"] = cursor.fetchall()
+
+    return response
+
 
 
 @app.route('/products/', methods=["POST"])
